@@ -26,7 +26,7 @@ public class RatingMpaService {
     public MpaDto getMpaById(int id) {
         RatingMpa ratingMpa = ratingMpaStorage.findByRatingMpaId(id);
         if (ratingMpa == null) {
-            throw new NotFoundException("Рейтинг MPA не найден.");
+            throw new NotFoundException("MPA rating not found");
         }
         return RatingMpaMapper.mapToMpaDto(ratingMpa);
     }

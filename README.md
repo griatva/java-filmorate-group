@@ -1,232 +1,149 @@
-# Filmorate
+# Filmorate — Social Movie Ratings API (Team Project)
 
-## Назначение
+A backend REST API for a social movie app. Users can like and review films, add friends, follow activity feeds, search, and get recommendations.
 
-Filmorate — это приложение аналог кинопоиска:)
+Built as a team project to practice Java + SQL, REST architecture, and clean layered design.
 
-## ER-диаграмма базы данных
+## Key Features
+- Films & Users: full CRUD with validation
+- Likes and Popular films (with filters by genre and year)
+- Friends and mutual friends
+- Reviews with usefulness ranking
+- Search by film title or director
+- Film recommendations based on similar likes
+- Activity feed: likes, reviews, friend events
+- Directors support: film-director relation and filtering
+- Genres and MPA ratings as reference data
 
+## My Contributions
+- Popular films by genre and year: `GET /films/popular?count=&genreId=&year=`
+- Film-director relation: assign directors to films
+- Director endpoints with sorting: `GET /films/director/{id}?sortBy=likes|year`
+- Full CRUD for directors
+
+## Database Schema (H2)
 ![Схема базы данных Filmorate](filmorate.png)
+- `users(user_id, email, login, name, birthday)`
+- `film(film_id, name, description, release_date, duration, rating_mpa_id)`
+- `rating_mpa(rating_mpa_id, name, description)`
+- `genre(genre_id, name)` · `film_genre(film_id, genre_id)`
+- `film_user_like(film_id, user_id)`
+- `directors(director_id, name)` · `film_director(film_id, director_id)`
+- `review(review_id, content, is_positive, user_id, film_id, useful)`
+- `review_like(review_id, user_id, is_like)`
+- `friendship(from_user_id, to_user_id, is_confirmed)`
+- `feeds(event_id, user_id, timestamp, event_type, operation, entity_id)`
 
-## Описание схемы
+## Full API Endpoints
 
-На данной диаграмме представлены следующие таблицы:
+###  Films
+- `GET /films` — Get all films
+- `GET /films/{id}` — Get film by ID
+- `POST /films` — Add new film
+- `PUT /films` — Update film
+- `DELETE /films/{id}` — Delete film
+- `PUT /films/{id}/like/{userId}` — Like a film
+- `DELETE /films/{id}/like/{userId}` — Remove like
+- `GET /films/popular` — Get most popular films (optional filters: `count`, `genreId`, `year`)
+- `GET /films/search?query={text}&by=title,director` — Search by title/director
+- `GET /films/director/{directorId}?sortBy=likes|year` — Get director’s films sorted
+- `GET /films/common` - get common films for 2 users
 
-- **directors**
-  Содержит информацию о режиссерах фильмов.
-  Поля:
-    - `director_id` — идентификатор режиссера (первичный ключ)
-    - `name` — имя режиссера
+###  Users
+- `GET /users` — Get all users
+- `GET /users/{id}` — Get user by ID
+- `POST /users` — Add new user
+- `PUT /users` — Update user
+- `DELETE /users/{id}` — Delete user
+- `PUT /users/{id}/friends/{friendId}` — Add friend
+- `DELETE /users/{id}/friends/{friendId}` — Remove friend
+- `GET /users/{id}/friends` — Get user’s friends
+- `GET /users/{id}/friends/common/{otherId}` — Mutual friends
+- `GET /users/{id}/feed` — User activity feed
+- `GET /users/{id}/recommendations` — Film recommendations
 
-### Пример запроса:
+###  Reviews
+- `GET /reviews` — Get all reviews (optional: `filmId`)
+- `GET /reviews/{id}` — Get review by ID
+- `POST /reviews` — Add review
+- `PUT /reviews` — Update review
+- `DELETE /reviews/{id}` — Delete review
+- `PUT /reviews/{id}/like/{userId}` — Like review
+- `PUT /reviews/{id}/dislike/{userId}` — Dislike review
+- `DELETE /reviews/{id}/like/{userId}` — Remove like
+- `DELETE /reviews/{id}/dislike/{userId}` — Remove dislike
 
-```sql
-INSERT INTO directors (name) VALUES ('Кристофер Нолан');
-SELECT * FROM directors;
+###  Directors
+- `GET /directors` — Get all directors
+- `GET /directors/{id}` — Get director by ID
+- `POST /directors` — Create director
+- `PUT /directors` — Update director
+- `DELETE /directors/{id}` — Delete director
+
+### Genres & MPA Ratings
+- `GET /genres` — List all genres
+- `GET /genres/{id}` — Get genre by ID
+- `GET /mpa` — List all MPA ratings
+- `GET /mpa/{id}` — Get MPA rating by ID
+
+
+__________
+
+## Tech Stack
+- Java 17, Spring Boot (Web, Validation)
+- SQL: H2 (file-based), JdbcTemplate, schema.sql / data.sql
+- Maven, Lombok, Logbook (HTTP logs)
+
+## Project Structure
+```
+src/main/java/ru/yandex/practicum/filmorate/
+├── annotations/            # Project-wide annotations (validation/qualifiers used across layers)
+├── controller/             # REST controllers (HTTP endpoints)
+├── dto/                    # Data Transfer Objects (request/response models)
+├── enums/                  # Enumerations and constants
+├── exception/              # Custom exceptions and global error handling
+├── model/                  # Domain models
+├── service/                # Business logic services
+└── storage/                # Data access layer
+    └── impl/
+        └── h2/             # JdbcTemplate-based repository implementations for H2
+            └── mappers/    # RowMapper classes
+
+src/main/resources/
+├── application.properties  # App configuration (port, H2, logging)
+├── schema.sql              # DDL: tables/relations
+└── data.sql                # Seed data
+
+src/test/java/
+├── ru/yandex/practicum/filmorate/FilmorateApplicationTests.java
+├── ru/yandex/practicum/filmorate/controller/FilmControllerTest.java
+└── ru/yandex/practicum/filmorate/controller/UserControllerTest.java
 ```
 
-- **rating_mpa**
-  Содержит информацию о рейтинге MPA.
-  Поля:
-    - `rating_mpa_id` — идентификатор рейтинга (первичный ключ)
-    - `name` — название рейтинга
-    - `description` — описание рейтинга
 
-### Пример запроса:
+H2 console: http://localhost:8080/h2-console  
+JDBC: jdbc:h2:file:./db/filmorate · user: sa · password: password
 
-```sql
-INSERT INTO rating_mpa (rating_mpa_id, name, description)
-VALUES (1, 'PG-13', 'Рекомендуется присмотр родителей для детей младше 13 лет');
-SELECT * FROM rating_mpa;
+_____
+
+## Run application
+
+```bash
+mvn spring-boot:run
 ```
+_____
 
-- **film**
-  Содержит информацию о фильмах.
-  Поля:
-    - `film_id` — идентификатор фильма (первичный ключ)
-    - `name` — название фильма
-    - `description` — описание фильма
-    - `release_date` — дата выхода фильма
-    - `duration` — длительность фильма
-    - `rating_mpa_id` — внешний ключ на таблицу `rating_mpa`
+### Repository & Contributors
 
-### Пример запроса:
+This project was developed as part of a team assignment at Practicum.
 
-```sql
-INSERT INTO film (name, description, release_date, duration, rating_mpa_id)
-VALUES ('Начало', 'Фантастический триллер', '2010-07-16', 148, 1);
-SELECT * FROM film;
-```
+Original team repository: https://github.com/Serminos/java-filmorate
 
-- **film_director**
-  Содержит информацию о связях между фильмами и режиссерами.
-  Поля:
-    - `film_id` — идентификатор фильма (внешний ключ)
-    - `director_id` — идентификатор режиссера (внешний ключ)
+Team Members:
 
-### Пример запроса:
-
-```sql
-INSERT INTO film_director (film_id, director_id) VALUES (1, 1);
-SELECT * FROM film_director;
-```
-
-- **users**
-  Содержит информацию о пользователях.
-  Поля:
-    - `user_id` — идентификатор пользователя (первичный ключ)
-    - `email` — email пользователя
-    - `login` — логин пользователя
-    - `name` — имя пользователя
-    - `birthday` — день рождения пользователя
-
-### Пример запроса:
-
-```sql
-INSERT INTO users (email, login, name, birthday)
-VALUES ('test@example.com', 'testuser', 'Тестовый Пользователь', '1990-01-01');
-SELECT * FROM users;
-```
-
-- **genre**
-  Содержит информацию о жанрах фильмов.
-  Поля:
-    - `genre_id` — идентификатор жанра (первичный ключ)
-    - `name` — наименование жанра
-
-### Пример запроса:
-
-```sql
-INSERT INTO genre (name) VALUES ('Драма');
-SELECT * FROM genre;
-```
-
-- **film_genre**
-  Содержит связи между фильмами и жанрами.
-  Поля:
-    - `film_id` — идентификатор фильма (внешний ключ)
-    - `genre_id` — идентификатор жанра (внешний ключ)
-
-### Пример запроса:
-
-```sql
-INSERT INTO film_genre (film_id, genre_id) VALUES (1, 1);
-SELECT * FROM film_genre;
-```
-
-- **friendship**
-  Содержит информацию о дружбе между пользователями.
-  Поля:
-    - `from_user_id` — идентификатор пользователя, отправившего запрос (внешний ключ)
-    - `to_user_id` — идентификатор пользователя, получившего запрос (внешний ключ)
-    - `is_confirmed` — статус подтверждения дружбы
-
-### Пример запроса:
-
-```sql
-INSERT INTO friendship (from_user_id, to_user_id, is_confirmed)
-VALUES (1, 2, true);
-SELECT * FROM friendship;
-```
-
-- **film_user_like**
-  Содержит информацию о лайках фильмов пользователями.
-  Поля:
-    - `film_id` — идентификатор фильма (внешний ключ)
-    - `user_id` — идентификатор пользователя (внешний ключ)
-
-### Пример запроса:
-
-```sql
-INSERT INTO film_user_like (film_id, user_id) VALUES (1, 1);
-SELECT * FROM film_user_like;
-```
-
-- **review**
-  Содержит отзывы пользователей на фильмы.
-  Поля:
-    - `review_id` — идентификатор отзыва (первичный ключ)
-    - `content` — текст отзыва
-    - `is_positive` — положительный ли отзыв
-    - `user_id` — идентификатор пользователя, оставившего отзыв (внешний ключ)
-    - `film_id` — идентификатор фильма (внешний ключ)
-    - `useful` — полезность отзыва
-
-### Пример запроса:
-
-```sql
-INSERT INTO review (content, is_positive, user_id, film_id, useful)
-VALUES ('Отличный фильм!', true, 1, 1, 15);
-SELECT * FROM review;
-```
-
-- **review_like**
-  Содержит информацию о лайках отзывов.
-  Поля:
-    - `review_id` — идентификатор отзыва (внешний ключ)
-    - `user_id` — идентификатор пользователя, поставившего лайк (внешний ключ)
-    - `is_like` — является ли это лайком (true/false)
-
-### Пример запроса:
-
-```sql
-INSERT INTO review_like (review_id, user_id, is_like) VALUES (1, 1, true);
-SELECT * FROM review_like;
-```
-
-- **feeds**
-  Содержит ленту событий для пользователей.
-  Поля:
-    - `event_id` — уникальный идентификатор события (первичный ключ)
-    - `user_id` — идентификатор пользователя, связанного с событием (внешний ключ)
-    - `timestamp` — временная метка события
-    - `event_type` — тип события (например, "LIKE", "REVIEW", "FRIENDSHIP")
-    - `operation` — операция, связанная с событием (например, "ADD", "REMOVE", "UPDATE")
-    - `entity_id` — идентификатор сущности, связанной с событием (например, фильм, отзыв)
-
-### Пример запроса:
-
-```sql
-INSERT INTO feeds (user_id, entity_id, event_type, operation, timestamp)
-VALUES (1, 1, 'LIKE', 'ADD', 1672531200);
-SELECT * FROM feeds;
-```
-
-## Примеры сложных запросов
-
-### Получение всех отзывов с сортировкой по полезности:
-
-```sql
-SELECT content, useful
-FROM review
-ORDER BY useful DESC;
-```
-
-### Получение фильмов определенного режиссера:
-
-```sql
-SELECT f.name
-FROM film f
-JOIN film_director fd ON f.film_id = fd.film_id
-WHERE fd.director_id = 1;
-```
-
-### Получение популярных фильмов (ТОП-10):
-
-```sql
-SELECT f.name, COUNT(ful.user_id) AS likes
-FROM film f
-LEFT JOIN film_user_like ful ON f.film_id = ful.film_id
-GROUP BY f.film_id
-ORDER BY likes DESC
-LIMIT 10;
-```
-
-### Получение подтвержденных друзей пользователя:
-
-```sql
-SELECT u.user_id, u.name
-FROM friendship f
-JOIN users u ON f.to_user_id = u.user_id
-WHERE f.from_user_id = 1 AND f.is_confirmed = true;
-```
+| Name         | GitHub                                                   |
+|--------------| -------------------------------------------------------- |
+| griatva (me) | https://github.com/griatva |
+| Serminos     | https://github.com/Serminos    |
+| NikolayChak  | https://github.com/NikolayChak   |
+| naviwe       | https://github.com/naviwe    |

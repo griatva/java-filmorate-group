@@ -53,22 +53,22 @@ public class ReviewService {
 
     private void checkReviewExists(long reviewId) {
         if (reviewStorage.findByReviewId(reviewId) == null) {
-            throw new NotFoundException("Не найден отзыв с ID - [" + reviewId + "]");
+            throw new NotFoundException("Review with ID [" + reviewId + "] was not found");
         }
     }
 
     private void checkReview(ReviewDto reviewDto) {
         if (userStorage.findByUserId(reviewDto.getUserId()) == null) {
-            throw new NotFoundException("Не найден пользователь с ID - [" + reviewDto.getUserId() + "]");
+            throw new NotFoundException("User with ID [" + reviewDto.getUserId() + "] was not found");
         }
         if (filmService.getById(reviewDto.getFilmId()) == null) {
-            throw new NotFoundException("Не найден фильм с ID - [" + reviewDto.getUserId() + "]");
+            throw new NotFoundException("Film with ID [" + reviewDto.getFilmId() + "] was not found");
         }
         if (reviewDto.getContent() == null || reviewDto.getContent().isBlank()) {
-            throw new BadRequestException("Отзыв не может быть пустым");
+            throw new BadRequestException("Review content must not be empty");
         }
         if (reviewDto.getIsPositive() == null) {
-            throw new BadRequestException("Отзыв должен иметь тип - Положительный или Отрицательный");
+            throw new BadRequestException("Review type must be specified (positive or negative)");
         }
     }
 
@@ -92,7 +92,7 @@ public class ReviewService {
     public void deleteById(long reviewId) {
         Review review = reviewStorage.findByReviewId(reviewId);
         if (review == null) {
-            throw new NotFoundException("Отзыв не найден.");
+            throw new NotFoundException("Review not found");
         }
         reviewStorage.deleteById(reviewId);
         eventStorage.create(review.getUserId(), EventType.REVIEW, Operation.REMOVE, reviewId);
@@ -123,7 +123,7 @@ public class ReviewService {
     public ReviewDto findById(long reviewId) {
         Review review = reviewStorage.findByReviewId(reviewId);
         if (review == null) {
-            throw new NotFoundException("Отзыв не найден.");
+            throw new NotFoundException("Review not found");
         }
         return ReviewMapper.mapToReviewDto(review);
     }

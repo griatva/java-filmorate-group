@@ -24,11 +24,11 @@ import java.util.Set;
 @AllArgsConstructor
 public class FilmDto {
     Long id;
-    @NotBlank(message = "Название фильма не может быть пустым;") String name;
-    @Size(max = 200, message = "Максимальная длина описания фильма — 200 символов") String description;
-    @MinDate(value = "1895-12-28", message = "Релиз не может быть раньше 28 декабря 1895 года.")
+    @NotBlank(message = "Film title must not be empty") String name;
+    @Size(max = 200, message = "Film description must not exceed 200 characters") String description;
+    @MinDate(value = "1895-12-28", message = "Release date must not be earlier than December 28, 1895")
     LocalDate releaseDate;
-    @Positive(message = "Продолжительность фильма должна быть положительным числом") Long duration;
+    @Positive(message = "Film duration must be a positive number") Long duration;
     Set<Long> userLikeIds = new HashSet<>();
     List<GenreDto> genres = new ArrayList<>();
     MpaDto mpa;

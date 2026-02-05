@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GenreDto {
     Long id;
-    @NotBlank(message = "Название жанра не может быть пустым")
+    @NotBlank(message = "Genre name must not be empty")
     String name;
 }

@@ -31,7 +31,7 @@ public class DirectorService {
         try {
             director = directorStorage.findById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Режиссер с id = " + id + " не найден");
+            throw new NotFoundException("Director with id = " + id + " was not found");
         }
         return DirectorMapper.mapToDirectorDto(director);
     }
@@ -43,12 +43,12 @@ public class DirectorService {
     public DirectorDto update(DirectorDto newDirectorDto) {
         Long directorId = newDirectorDto.getId();
         if (directorId == null) {
-            throw new BadRequestException("Id должен быть указан");
+            throw new BadRequestException("Id must be specified");
         }
 
         Integer count = directorStorage.existsByDirectorId(directorId);
         if (count == null || count == 0) {
-            throw new NotFoundException("Режиссер с id = " + directorId + " не найден");
+            throw new NotFoundException("Director with id = " + directorId + " was not found");
         }
 
 
@@ -57,9 +57,9 @@ public class DirectorService {
 
     public void deleteById(long directorId) {
         if (directorStorage.deleteByDirectorId(directorId) == 0) {
-            log.warn("Попытка удаления: режиссер с director_id = [{}] не найден", directorId);
+            log.warn("Delete attempt failed: director with director_id = [{}] was not found", directorId);
         } else {
-            log.trace("Режиссер с id = [{}] успешно удален", directorId);
+            log.trace("Director with id = [{}] was successfully deleted", directorId);
         }
     }
 }

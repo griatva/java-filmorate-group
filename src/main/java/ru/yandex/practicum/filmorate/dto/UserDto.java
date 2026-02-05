@@ -18,14 +18,14 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserDto {
     Long id;
-    @Email(message = "Электронная почта не может быть пустой и должна содержать символ @")
-    @NotNull(message = "Электронная почта не может быть пустой и должна содержать символ @")
+    @Email(message = "Email address must be valid and contain the '@' symbol")
+    @NotNull(message = "Email address must not be null")
     String email;
-    @NotBlank(message = "Логин не может быть пустым и содержать пробелы")
-    @Pattern(regexp = "[^ ]+", message = "Логин не может содержать пробелы")
+    @NotBlank(message = "Login must not be empty")
+    @Pattern(regexp = "[^ ]+", message = "Login must not contain spaces")
     String login;
     String name;
-    @PastOrPresent(message = "Дата рождения не может быть в будущем")
+    @PastOrPresent(message = "Birthday must not be in the future")
     LocalDate birthday;
     Set<Long> friends = new HashSet<>();
 

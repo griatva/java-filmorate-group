@@ -46,7 +46,7 @@ public class UserService {
 
     private void checkUserExists(long userId) {
         if (userStorage.findByUserId(userId) == null) {
-            throw new NotFoundException("Не найден пользователь с ID - [" + userId + "]");
+            throw new NotFoundException("User with ID [" + userId + "] was not found");
         }
     }
 
@@ -70,7 +70,7 @@ public class UserService {
 
     public void addFriend(long userId, long friendId) {
         if (userId == friendId) {
-            throw new NotFoundException("Нельзя добавить себя в друзья");
+            throw new NotFoundException("Cannot add yourself as a friend");
         }
         checkUserExists(userId);
         checkUserExists(friendId);
@@ -81,7 +81,7 @@ public class UserService {
 
     public void deleteFriend(long userId, long friendId) {
         if (userId == friendId) {
-            throw new NotFoundException("Нельзя удалить себя из друзей");
+            throw new NotFoundException("Cannot remove yourself from friends");
         }
         checkUserExists(userId);
         checkUserExists(friendId);

@@ -47,16 +47,16 @@ public class FilmDirectorDbStorage implements FilmDirectorStorage {
         for (int count : updateCounts) {
             addedCount += count;
         }
-        log.trace("Добавлено [{}] записей в таблицу film_director для фильма с id = [{}]", addedCount, filmId);
+        log.trace("Added [{}] records to the film_director table for film with id = [{}]", addedCount, filmId);
     }
 
     @Override
     public void deleteByFilmId(Long filmId) {
         int deletedCount = jdbcTemplate.update(DELETE_BY_FILM_ID, filmId);
         if (deletedCount > 0) {
-            log.trace("Удалено [{}] записей из таблицы film_director для фильма с id = [{}]", deletedCount, filmId);
+            log.trace("Deleted [{}] records from the film_director table for film with id = [{}]", deletedCount, filmId);
         } else {
-            log.trace("Не найдено записей для удаления в таблице film_director для фильма с id = [{}]", filmId);
+            log.trace("No records found to delete from the film_director table for film with id = [{}]", filmId);
         }
     }
 
