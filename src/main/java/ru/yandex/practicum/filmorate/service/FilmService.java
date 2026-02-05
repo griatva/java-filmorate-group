@@ -62,7 +62,7 @@ public class FilmService {
     private void checkRatingMpaAndGenresFilmDto(FilmDto filmDto) {
         if (filmDto.getMpa() != null && filmDto.getMpa().getId() != null) {
             if (cacheRatingMpa.get(filmDto.getMpa().getId()) == null) {
-                throw new BadRequestException("Указанный ID-рейтинга MPA не найден - " +
+                throw new BadRequestException("Specified MPA rating ID was not found: " +
                         "[{" + filmDto.getMpa().getId() + "}]");
             }
             cacheRatingMpa.get(filmDto.getMpa().getId());
@@ -70,7 +70,7 @@ public class FilmService {
         if (filmDto.getGenres() != null) {
             for (GenreDto genreDto : filmDto.getGenres()) {
                 if (cacheGenre.get(genreDto.getId()) == null) {
-                    throw new BadRequestException("Указанный ID-жанра не найден - " +
+                    throw new BadRequestException("Specified genre ID was not found: " +
                             "[{" + genreDto.getId() + "}]");
                 }
             }
@@ -175,13 +175,13 @@ public class FilmService {
 
     private void checkFilmExists(long filmId) {
         if (filmStorage.findByFilmId(filmId) == null) {
-            throw new NotFoundException("Фильм не найден.");
+            throw new NotFoundException("Film was not found");
         }
     }
 
     private void checkUserExists(long userId) {
         if (userStorage.findByUserId(userId) == null) {
-            throw new NotFoundException("Пользователь не найден.");
+            throw new NotFoundException("User was not found");
         }
     }
 
@@ -206,13 +206,13 @@ public class FilmService {
 
     private void checkSearchParams(Map<String, Long> params) {
         if (params.get("genreId") != null && cacheGenre.get(params.get("genreId")) == null) {
-            throw new BadRequestException("Указанный ID-жанра не найден - " +
+            throw new BadRequestException("Specified genre ID was not found: " +
                     "[{" + params.get("genreId") + "}]");
         }
 
         if (params.get("year") != null &&
                 (params.get("year") < FILM_BIRTHDAY_YEAR || params.get("year") > LocalDate.now().getYear())) {
-            throw new BadRequestException("Год выпуска фильма должен быть не раньше 1895 и не позже " +
+            throw new BadRequestException("Film release year must be no earlier than 1895 and no later than " +
                     LocalDate.now().getYear() + ".");
         }
     }
@@ -302,7 +302,7 @@ public class FilmService {
     public List<FilmDto> getFilmsByDirectorIdWithSort(long directorId, SortBy sortBy) {
         Integer count = directorStorage.existsByDirectorId(directorId);
         if (count == null || count == 0) {
-            throw new NotFoundException("Режиссер с id = " + directorId + " не найден");
+            throw new NotFoundException("Director with id = " + directorId + " was not found");
         }
         List<Film> filmsByDirector = filmStorage.findByDirectorIdWithSort(directorId, sortBy);
         return mapFilmsToFilmDtosAndAddDopInfo(filmsByDirector);
@@ -347,7 +347,7 @@ public class FilmService {
 
     private Set<Long> getCurrentUserLikes(long userId) {
         Set<Long> currentUserLikes = filmUserLikeStorage.findFilmsIdByUserId(userId);
-        log.debug("Пользователь с ID [{}] лайкал фильмы с ID: {}", userId, currentUserLikes);
+        log.debug("User with ID [{}] liked films with IDs: {}", userId, currentUserLikes);
         return currentUserLikes;
     }
 
@@ -356,7 +356,7 @@ public class FilmService {
                 .findUsersIdIntersectByFilmsLikesWithUserByUserId(userId, currentUserLikesFilmIds)
                 .stream()
                 .toList();
-        log.debug("ID-других пользователей: {}", otherUserIds);
+        log.debug("Other users' IDs: {}", otherUserIds);
         return otherUserIds;
     }
 
@@ -374,7 +374,7 @@ public class FilmService {
             }
         }
 
-        log.debug("Id-пользователя наиболее похожего по лайкам : [{}]", mostSimilarUserId);
+        log.debug("ID of the user most similar by likes: [{}]", mostSimilarUserId);
         return mostSimilarUserId;
     }
 
@@ -382,7 +382,7 @@ public class FilmService {
         Long commonLikes = currentUserLikes.stream()
                 .filter(otherUserLikes::contains)
                 .count();
-        log.debug("Общие лайки: {}", commonLikes);
+        log.debug("Common likes: {}", commonLikes);
         return commonLikes;
     }
 
@@ -390,7 +390,7 @@ public class FilmService {
         Set<Long> similarUserLikes = filmUserLikeStorage.findFilmsIdByUserId(mostSimilarUserId);
         Set<Long> recommendedFilmIds = new HashSet<>(similarUserLikes);
         recommendedFilmIds.removeAll(currentUserLikes);
-        log.debug("Рекомендованные фильмы (IDs): {}", recommendedFilmIds);
+        log.debug("Recommended films (IDs): {}", recommendedFilmIds);
         return recommendedFilmIds;
     }
 

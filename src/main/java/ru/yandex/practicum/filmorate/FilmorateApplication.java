@@ -10,7 +10,7 @@ public class FilmorateApplication {
     private static final Logger log = LoggerFactory.getLogger(FilmorateApplication.class);
 
     public static void main(String[] args) {
-        log.info("Старт приложения - FilmorateApplication!");
+        log.info("Application started - FilmorateApplication!");
         SpringApplication.run(FilmorateApplication.class, args);
     }
 }

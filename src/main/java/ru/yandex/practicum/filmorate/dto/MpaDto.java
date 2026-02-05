@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MpaDto {
     Long id;
-    @NotNull(message = "Рейтинг должен иметь название")
+    @NotNull(message = "Rating name must not be null")
     String name;
     String description;
 }
