@@ -18,31 +18,31 @@ public class DirectorController {
 
     @GetMapping
     public List<DirectorDto> getAll() {
-        log.debug("Получен запрос на получение списка всех режиссеров");
+        log.debug("Received request to retrieve the list of all directors");
         return directorService.getAll();
     }
 
     @GetMapping("/{id}")
     public DirectorDto getById(@PathVariable("id") long id) {
-        log.debug("Получен запрос на поиск режиссера по его id: [{}]", id);
+        log.debug("Received request to find director by id: [{}]", id);
         return directorService.getById(id);
     }
 
     @PostMapping
     public DirectorDto create(@Valid @RequestBody DirectorDto directorDto) {
-        log.debug("Получен запрос на добавление режиссера: [{}]", directorDto);
+        log.debug("Received request to create director: [{}]", directorDto);
         return directorService.create(directorDto);
     }
 
     @PutMapping
     public DirectorDto update(@Valid @RequestBody DirectorDto newDirectorDto) {
-        log.debug("Получен запрос на обновление режиссера: [{}]", newDirectorDto);
+        log.debug("Received request to update director: [{}]", newDirectorDto);
         return directorService.update(newDirectorDto);
     }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") long id) {
-        log.debug("Получен запрос на удаление режиссера по его id: [{}]", id);
+        log.debug("Received request to delete director by id: [{}]", id);
         directorService.deleteById(id);
     }
 }

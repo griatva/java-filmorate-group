@@ -76,9 +76,9 @@ public class DirectorDbStorage implements DirectorStorage {
             final Long generatedId = (Long) keys.get("director_id");
             director.setId(generatedId);
         } else {
-            throw new RuntimeException("Не удалось получить сгенерированный ID для режиссера");
+            throw new RuntimeException("Failed to retrieve the generated ID for the director");
         }
-        log.trace("Добавление режиссера: [{}] - закончено, присвоен id: [{}]", director, director.getId());
+        log.trace("Director creation completed: [{}] - assigned id: [{}]", director, director.getId());
         return director;
     }
 
@@ -88,7 +88,7 @@ public class DirectorDbStorage implements DirectorStorage {
         jdbcTemplate.update(UPDATE_DIRECTOR, newDirector.getName(), newDirectorId);
 
         final Director updatedDirector = findById(newDirectorId);
-        log.trace("Обновление режиссера: [{}] - закончено.", updatedDirector);
+        log.trace("Director update completed: [{}]", updatedDirector);
         return updatedDirector;
     }
 
@@ -99,9 +99,9 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public Set<Director> findByFilmId(long filmId) {
-        log.trace("Получение режиссера/-ов фильма с id: [{}]", filmId);
+        log.trace("Retrieving director(s) for film with id: [{}]", filmId);
         Set<Director> directors = new HashSet<>(jdbcTemplate.query(GET_DIRECTORS_BY_FILM_ID, directorRowMapper, filmId));
-        log.trace("Список режиссеров для фильма с id [{}] подготовлен. Найдено [{}] режиссеров.", filmId, directors.size());
+        log.trace("Director list for film with id [{}] prepared. Found [{}] director(s)", filmId, directors.size());
         return directors;
     }
 
@@ -111,7 +111,7 @@ public class DirectorDbStorage implements DirectorStorage {
         for (Long directorId : directorIdSet) {
             Integer count = jdbcTemplate.queryForObject(CHECK_DIRECTOR_EXISTS, Integer.class, directorId);
             if (count == null || count == 0) {
-                throw new NotFoundException("Режиссер с id = " + directorId + " не найден");
+                throw new NotFoundException("Director with id = " + directorId + " was not found");
             }
         }
     }

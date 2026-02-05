@@ -31,13 +31,13 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@Valid @RequestBody UserDto userDto) {
-        log.debug("Создание пользователя [{}]", userDto);
+        log.debug("Creating user [{}]", userDto);
         return userService.create(userDto);
     }
 
     @PutMapping
     public UserDto update(@Valid @RequestBody UserDto userDto) {
-        log.debug("Обновление пользователя [{}]", userDto);
+        log.debug("Updating user [{}]", userDto);
         return userService.update(userDto);
     }
 
@@ -48,13 +48,13 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable long id, @PathVariable long friendId) {
-        log.debug("Добавление друзей [{}] - [{}]", id, friendId);
+        log.debug("Adding friends [{}] - [{}]", id, friendId);
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable long id, @PathVariable long friendId) {
-        log.debug("Удаление друзей [{}] - [{}]", id, friendId);
+        log.debug("Removing friends [{}] - [{}]", id, friendId);
         userService.deleteFriend(id, friendId);
     }
 
@@ -70,27 +70,27 @@ public class UserController {
 
     @GetMapping("/{id}/feed")
     public List<EventDto> getEvent(@PathVariable long id) {
-        log.debug("Получение ленты событий пользователя - [{}]", id);
+        log.debug("Retrieving event feed for user - [{}]", id);
         return userService.getEvent(id);
     }
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable long id) {
-        log.debug("Получение пользователя с идентификатором - [{}]", id);
+        log.debug("Retrieving user with id - [{}]", id);
         return userService.getUserById(id);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUserById(@PathVariable long id) {
-        log.debug("Удаление пользователя с идентификатором [{}]", id);
+        log.debug("Deleting user with id [{}]", id);
         userService.deleteUserById(id);
     }
 
     @GetMapping("/{id}/recommendations")
     public List<FilmDto> getFilmRecommendations(@PathVariable long id) {
-        log.debug("Получен запрос на получение рекомендованных для пользователя [{}] фильмов", id);
+        log.debug("Received request to retrieve film recommendations for user [{}]", id);
         List<FilmDto> recommendationDtos = filmService.getFilmRecommendations(id);
-        log.debug("Количество рекомендованных фильмов для пользователя [{}]: {}", id, recommendationDtos.size());
+        log.debug("Number of recommended films for user [{}]: {}", id, recommendationDtos.size());
         return recommendationDtos;
     }
 }

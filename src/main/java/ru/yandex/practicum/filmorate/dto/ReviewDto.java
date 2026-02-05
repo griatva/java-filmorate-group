@@ -15,13 +15,13 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 public class ReviewDto {
     private Long reviewId;
-    @NotBlank(message = "Отзыв не может быть пустым")
+    @NotBlank(message = "Review content must not be empty")
     private String content;
-    @NotNull(message = "Отзыв должен иметь тип - Положительный или Отрицательный")
+    @NotNull(message = "Review type must be specified (positive or negative)")
     private Boolean isPositive;
-    @NotNull(message = "ID пользователя не указан")
+    @NotNull(message = "User ID must be specified")
     private Long userId;
-    @NotNull(message = "ID фильма не указан")
+    @NotNull(message = "Film ID must be specified")
     private Long filmId;
     private Integer useful;
 }

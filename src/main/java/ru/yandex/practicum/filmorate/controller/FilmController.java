@@ -27,14 +27,14 @@ public class FilmController {
 
     @PostMapping
     public FilmDto create(@Valid @RequestBody FilmDto filmDto) {
-        log.debug("Создание фильма [{}]", filmDto);
+        log.debug("Creating film [{}]", filmDto);
         filmDto = filmService.create(filmDto);
         return filmDto;
     }
 
     @PutMapping
     public FilmDto update(@Valid @RequestBody FilmDto filmDto) {
-        log.debug("Обновление фильма [{}]", filmDto);
+        log.debug("Updating film  [{}]", filmDto);
         filmDto = filmService.update(filmDto);
         return filmDto;
     }
@@ -51,13 +51,13 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable long id, @PathVariable long userId) {
-        log.debug("Добавление лайка для фильма [{}] пользователем [{}]", id, userId);
+        log.debug("Adding like to film [{}] by user [{}]", id, userId);
         filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
-        log.debug("Удаление лайка для фильма [{}] пользователем [{}]", id, userId);
+        log.debug("Removing like from film [{}] by user [{}]", id, userId);
         filmService.deleteLike(id, userId);
     }
 
@@ -65,8 +65,9 @@ public class FilmController {
     public List<FilmDto> getPopularFilmsByParams(@RequestParam(defaultValue = "10") Long count,
                                                  @RequestParam(required = false) Long genreId,
                                                  @RequestParam(required = false) Long year) {
-        log.debug("Получен запрос на получение самых популярных фильмов в количестве = [{}], " +
-                "возможна фильтрация по параметрам: жанру с id [{}] и/или году [{}]", count, genreId, year);
+        log.debug("Received request to retrieve the most popular films: count=[{}], " +
+                        "optional filters: genreId=[{}], year=[{}]", count, genreId, year);
+
         Map<String, Long> params = new HashMap<>();
         Optional.ofNullable(genreId).ifPresent(v -> params.put("genreId", genreId));
         Optional.ofNullable(year).ifPresent(v -> params.put("year", year));
@@ -76,14 +77,14 @@ public class FilmController {
 
     @GetMapping("/common")
     public List<FilmDto> getCommonFilms(@RequestParam long userId, @RequestParam long friendId) {
-        log.debug("Получен запрос на общие фильмы для пользователей: userId=[{}], friendId=[{}]", userId, friendId);
+        log.debug("Received request to retrieve common films for users: userId=[{}], friendId=[{}]", userId, friendId);
         return filmService.getCommonFilms(userId, friendId);
     }
 
     @GetMapping("/director/{directorId}")
     public List<FilmDto> getFilmsByDirectorIdWithSort(@PathVariable long directorId,
                                                       @RequestParam String sortBy) {
-        log.debug("Получен запрос на получение всех фильмов режиссера с directorId = [{}], сортировка по [{}]",
+        log.debug("Received request to retrieve all films by director with directorId=[{}], sorted by [{}]",
                 directorId, sortBy);
         SortBy sort = SortBy.fromString(sortBy);
         return filmService.getFilmsByDirectorIdWithSort(directorId, sort);
@@ -91,13 +92,13 @@ public class FilmController {
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable long id) {
-        log.debug("Удаление фильма с идентификатором [{}]", id);
+        log.debug("Deleting film with id=[{}]", id);
         filmService.deleteById(id);
     }
 
     @GetMapping("/search")
     public List<FilmDto> getSearch(@RequestParam String query, @RequestParam List<String> by) {
-        log.debug("Получен запрос на поиск фильма: query=[{}], by=[{}]", query, by);
+        log.debug("Received film search request: query=[{}], by=[{}]", query, by);
         return filmService.getSearch(query, by);
     }
 }

@@ -8,6 +8,6 @@ public class DirectorDto {
 
     private Long id;
 
-    @NotBlank(message = "Имя режиссера не может быть пустым")
+    @NotBlank(message = "Director name must not be empty")
     private String name;
 }

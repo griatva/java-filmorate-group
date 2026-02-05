@@ -31,28 +31,28 @@ public class ErrorHandler {
             errors.put(fieldName, errorMessage);
         });
         String metodName = Objects.requireNonNull(ex.getParameter().getMethod()).getName();
-        log.info("Ошибка валидации данных [{}] - [{}]", metodName, errors);
+        log.info("Validation error in method [{}] - [{}]", metodName, errors);
         return errors;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public ErrorResponse handleValidationExceptions(NotFoundException e) {
-        log.info("Ошибка сервера: {}", e.getMessage());
+        log.info("Server error: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public ErrorResponse handleValidationExceptions(BadRequestException e) {
-        log.info("Ошибка сервера: {}", e.getMessage());
+        log.info("Server error: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGenericException(Exception e) {
-        log.info("Ошибка сервера: {}", e.getMessage());
-        return new ErrorResponse("Ошибка сервера: " + e.getMessage());
+        log.info("Server error: {}", e.getMessage());
+        return new ErrorResponse("Server error: " + e.getMessage());
     }
 }

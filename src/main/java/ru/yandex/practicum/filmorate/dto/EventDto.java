@@ -14,24 +14,24 @@ import ru.yandex.practicum.filmorate.enums.Operation;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventDto {
-    @NotNull(message = "ID события не может быть null.")
+    @NotNull(message = "Event ID must not be null")
     private Long eventId;
 
-    @NotNull(message = "ID пользователя не может быть null.")
-    @Positive(message = "ID пользователя должен быть положительным числом.")
+    @NotNull(message = "User ID must not be null")
+    @Positive(message = "User ID must be a positive number")
     private Long userId;
 
-    @NotNull(message = "Timestamp не может быть null.")
-    @Positive(message = "Timestamp должен быть положительным числом.")
+    @NotNull(message = "Timestamp must not be null")
+    @Positive(message = "Timestamp must be a positive number")
     private Long timestamp;
 
-    @NotNull(message = "Тип события не может быть null.")
+    @NotNull(message = "Event type must not be null")
     private EventType eventType;
 
-    @NotNull(message = "Операция не может быть null.")
+    @NotNull(message = "Operation must not be null")
     private Operation operation;
 
-    @NotNull(message = "ID сущности не может быть null.")
-    @Positive(message = "ID сущности должен быть положительным числом.")
+    @NotNull(message = "Entity ID must not be null")
+    @Positive(message = "Entity ID must be a positive number")
     private Long entityId;
 }
