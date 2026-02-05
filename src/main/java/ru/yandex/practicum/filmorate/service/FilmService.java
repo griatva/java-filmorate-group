@@ -62,7 +62,7 @@ public class FilmService {
     private void checkRatingMpaAndGenresFilmDto(FilmDto filmDto) {
         if (filmDto.getMpa() != null && filmDto.getMpa().getId() != null) {
             if (cacheRatingMpa.get(filmDto.getMpa().getId()) == null) {
-                throw new BadRequestException("Specified MPA rating ID was not found: " +
+                throw new NotFoundException("Specified MPA rating ID was not found: " +
                         "[{" + filmDto.getMpa().getId() + "}]");
             }
             cacheRatingMpa.get(filmDto.getMpa().getId());
@@ -70,7 +70,7 @@ public class FilmService {
         if (filmDto.getGenres() != null) {
             for (GenreDto genreDto : filmDto.getGenres()) {
                 if (cacheGenre.get(genreDto.getId()) == null) {
-                    throw new BadRequestException("Specified genre ID was not found: " +
+                    throw new NotFoundException("Specified genre ID was not found: " +
                             "[{" + genreDto.getId() + "}]");
                 }
             }
@@ -206,7 +206,7 @@ public class FilmService {
 
     private void checkSearchParams(Map<String, Long> params) {
         if (params.get("genreId") != null && cacheGenre.get(params.get("genreId")) == null) {
-            throw new BadRequestException("Specified genre ID was not found: " +
+            throw new NotFoundException("Specified genre ID was not found: " +
                     "[{" + params.get("genreId") + "}]");
         }
 
